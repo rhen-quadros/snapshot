@@ -41,14 +41,11 @@ const ContactForm = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+      <form onSubmit={handleSubmit} className="mx-20">
         {/* Name input field */}
         <div className="mb-4">
           {" "}
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="name"
-          >
+          <label className="block text-gray-700 text-sm font-bold mb-2">
             Creator Address
           </label>
           <input
@@ -85,7 +82,7 @@ const ContactForm = () => {
       </form>
 
       {/* Display the API results */}
-      {unlistedHolders.length > 0 && (
+      {/* {unlistedHolders.length > 0 && (
         <div className="max-w-md mx-auto">
           <h2 className="text-xl font-bold mb-4">Unlisted Holders:</h2>
           <ul>
@@ -94,9 +91,57 @@ const ContactForm = () => {
             ))}
           </ul>
         </div>
-      )}
+      )} */}
+      <div className="mx-20">
+        <h2 className="text-xl font-bold mb-4">Unlisted Holders:</h2>
+        <table className="min-w-full bg-white dark:bg-gray-800">
+          <thead>
+            <tr>
+              <th className="py-2 px-4 border-b dark:border-gray-600">Index</th>
+              <th className="py-2 px-4 border-b dark:border-gray-600">
+                Holder
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {unlistedHolders.map((holder, index) => (
+              <tr
+                key={index}
+                className={
+                  index % 2 === 0
+                    ? "bg-gray-100 text-center dark:bg-gray-700"
+                    : ""
+                }
+              >
+                <td className="py-2 px-4 text-center border-b dark:border-gray-600">
+                  {index + 1}
+                </td>
+                <td className="py-2 px-4 text-center border-b dark:border-gray-600">
+                  {holder}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
 export default ContactForm;
+
+{
+  /* <Table>
+  <TableCaption>Full Snapshot</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[100px]">Wallet Address</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="font-medium">INV001</TableCell>
+    </TableRow>
+  </TableBody>
+</Table> */
+}
