@@ -17,7 +17,6 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { Checkbox } from "./ui/checkbox";
-import { Table } from "./ui/table"; // Import or create a suitable table component
 
 // Define the form schema
 const formSchema = z.object({
