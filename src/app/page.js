@@ -11,7 +11,7 @@ const ContactPage = () => {
     <div>
       {/* <Navbar /> */}
       <div className="p-8">
-        <h1>📸 Snapshot</h1>
+        <h2>📸 Snapshot</h2>
         <p class="max-w-[700px] text-lg text-muted-foreground mt-4">
           The most robust snapshot tool on the blockchain.
         </p>
