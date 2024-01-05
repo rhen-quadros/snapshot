@@ -3,6 +3,17 @@
 
 import React, { useState, useEffect } from "react";
 import { getAssetsByGroup } from "../lib/api";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +23,7 @@ const ContactForm = () => {
     notListed: false,
   });
 
-  const [unlistedHolders, setUnlistedHolders] = useState([]);
+  const [snapshotList, setsnapshotList] = useState([]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -32,7 +43,7 @@ const ContactForm = () => {
       const creatorAddress = formData.creatorAddress;
       const marketplace = formData.notListed;
       const result = await getAssetsByGroup(creatorAddress, marketplace);
-      setUnlistedHolders(result);
+      setsnapshotList(result);
       console.log("Unlisted Holders:", result);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -41,7 +52,7 @@ const ContactForm = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="mx-20">
+      <form onSubmit={handleSubmit} className="p-8">
         {/* Name input field */}
         <div className="mb-4">
           {" "}
@@ -82,18 +93,18 @@ const ContactForm = () => {
       </form>
 
       {/* Display the API results */}
-      {/* {unlistedHolders.length > 0 && (
+      {snapshotList.length > 0 && (
         <div className="max-w-md mx-auto">
-          <h2 className="text-xl font-bold mb-4">Unlisted Holders:</h2>
+          <h2 className="text-xl font-bold mb-4">Wallet Address</h2>
           <ul>
-            {unlistedHolders.map((holder, index) => (
+            {snapshotList.map((holder, index) => (
               <li key={index}>{holder}</li>
             ))}
           </ul>
         </div>
-      )} */}
-      <div className="mx-20">
-        <h2 className="text-xl font-bold mb-4">Unlisted Holders:</h2>
+      )}
+      {/* <div className="mx-20">
+        <h2 className="text-xl font-bold mb-4 p-4">Results</h2>
         <table className="min-w-full bg-white dark:bg-gray-800">
           <thead>
             <tr>
@@ -104,7 +115,7 @@ const ContactForm = () => {
             </tr>
           </thead>
           <tbody>
-            {unlistedHolders.map((holder, index) => (
+            {snapshotList.map((holder, index) => (
               <tr
                 key={index}
                 className={
@@ -123,25 +134,9 @@ const ContactForm = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </div> */}
     </div>
   );
 };
 
 export default ContactForm;
-
-{
-  /* <Table>
-  <TableCaption>Full Snapshot</TableCaption>
-  <TableHeader>
-    <TableRow>
-      <TableHead className="w-[100px]">Wallet Address</TableHead>
-    </TableRow>
-  </TableHeader>
-  <TableBody>
-    <TableRow>
-      <TableCell className="font-medium">INV001</TableCell>
-    </TableRow>
-  </TableBody>
-</Table> */
-}
