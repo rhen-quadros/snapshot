@@ -2,6 +2,7 @@
 
 // Import necessary libraries and components
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { getAssetsByGroup } from "../lib/api";
@@ -17,6 +18,15 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { Checkbox } from "./ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
 
 // Define the form schema
 const formSchema = z.object({
@@ -26,12 +36,13 @@ const formSchema = z.object({
 
 // Define the ProfileForm component
 export function ProfileForm() {
+  const [snapshotResult, setSanpshotResult] = useState(null);
   // Initialize the form
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       creatorAddress: "",
-      notListed: true,
+      notListed: false,
     },
   });
 
@@ -43,6 +54,7 @@ export function ProfileForm() {
         data.creatorAddress,
         data.notListed
       );
+      setSanpshotResult(result); // Store the result in the state
 
       // Update the form state with the result
       form.setValue("result", result);
@@ -106,6 +118,29 @@ export function ProfileForm() {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
+      {/* Display the results */}
+      <h2 className="my-10">Results.</h2>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Wallet Address</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {snapshotResult &&
+            snapshotResult.map((result, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{result}</TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+      {/* {snapshotResult && (
+        <div>
+          <h2>Search Results:</h2>
+          <pre>{JSON.stringify(snapshotResult, null, 2)}</pre>
+        </div>
+      )} */}
     </div>
   );
 }
