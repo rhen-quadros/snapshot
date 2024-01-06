@@ -66,6 +66,11 @@ export function ProfileForm() {
     }
   };
 
+  function countOccurrences(walletAddress) {
+    // Count occurrences of the wallet address in the snapshotResult array
+    return snapshotResult.filter((address) => address === walletAddress).length;
+  }
+
   // Render the component
   return (
     <div className="p-6 max-w-screen-xl mx-auto">
@@ -119,11 +124,17 @@ export function ProfileForm() {
         </form>
       </Form>
       {/* Display the results */}
-      <h2 className="my-10">Results.</h2>
+      <div className="my-10 flex justify-between items-center">
+        <h2 className="flex justify-between items-center">Results.</h2>
+        <h3 className="flex justify-between items-center">
+          Total: {snapshotResult ? snapshotResult.length : null}
+        </h3>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Wallet Address</TableHead>
+            <TableHead className="w-[100px]">Amount Owned</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -131,6 +142,7 @@ export function ProfileForm() {
             snapshotResult.map((result, index) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">{result}</TableCell>
+                <TableCell>{countOccurrences(result)}</TableCell>
               </TableRow>
             ))}
         </TableBody>
