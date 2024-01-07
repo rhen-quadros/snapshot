@@ -28,6 +28,14 @@ import {
   TableRow,
 } from "./ui/table";
 import { ScrollArea } from "./ui/scroll-area";
+import Papa from "papaparse";
+import { Sheet, FileJson, Copy } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 // Define the form schema
 const formSchema = z.object({
@@ -73,8 +81,37 @@ export function ProfileForm() {
   }
 
   const handleDownloadCSV = () => {
-    // Implement CSV download logic here
-    // You can use a library like 'papaparse' to convert array to CSV
+    // Extract relevant data from the JSON response
+    const walletAddresses = snapshotResult || [];
+
+    // Convert data to CSV format
+    const csv = Papa.unparse(
+      walletAddresses.map((address) => ({ address })),
+      {
+        header: true,
+        quotes: true,
+      }
+    );
+
+    // Create a Blob and download the file
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+
+    if (navigator.msSaveBlob) {
+      // IE 10+
+      navigator.msSaveBlob(blob, "wallet_addresses.csv");
+    } else {
+      // Other browsers
+      const url = URL.createObjectURL(blob);
+
+      link.href = url;
+      link.download = "wallet_addresses.csv";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+    }
   };
 
   const handleDownloadJSON = () => {
@@ -112,7 +149,10 @@ export function ProfileForm() {
               <FormItem>
                 <FormLabel>On-chain collection address</FormLabel>
                 <FormControl>
-                  <Input placeholder="On chain collection address" {...field} />
+                  <Input
+                    placeholder="DKS Example - 7LxjzYdvXXDMxEmjS3aBC26ut4FMtDUae44nkHBPNVWP"
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>
                   <a
@@ -120,7 +160,7 @@ export function ProfileForm() {
                     href="https://magiceden.io/item-details/9Pqy8i6QQJqjbrkGyMVA1uLev2F7cXBjR5bY6hySdfsb?name=The-Mystic-King"
                     target="_blank"
                   >
-                    Example here
+                    More info
                   </a>
                 </FormDescription>
                 <FormMessage />
@@ -160,9 +200,41 @@ export function ProfileForm() {
           </div>
 
           <div className="flex space-x-4">
-            <Button onClick={handleDownloadCSV}>Download CSV</Button>
-            <Button onClick={handleDownloadJSON}>Download JSON</Button>
-            <Button onClick={handleCopyToClipboard}>Copy to Clipboard</Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  {" "}
+                  <Button variant="outline" onClick={handleDownloadCSV}>
+                    <Sheet />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Download as CSV</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  {" "}
+                  <Button variant="outline" onClick={handleDownloadJSON}>
+                    {" "}
+                    <FileJson />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Download as JSON</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  {" "}
+                  <Button variant="outline" onClick={handleCopyToClipboard}>
+                    <Copy />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Copy</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
       </div>
