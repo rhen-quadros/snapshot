@@ -27,6 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import { ScrollArea } from "./ui/scroll-area";
 
 // Define the form schema
 const formSchema = z.object({
@@ -71,6 +72,30 @@ export function ProfileForm() {
     return snapshotResult.filter((address) => address === walletAddress).length;
   }
 
+  const handleDownloadCSV = () => {
+    // Implement CSV download logic here
+    // You can use a library like 'papaparse' to convert array to CSV
+  };
+
+  const handleDownloadJSON = () => {
+    const jsonData = JSON.stringify(snapshotResult, null, 2);
+    const blob = new Blob([jsonData], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "output.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopyToClipboard = () => {
+    // Copy the entire JSON array to the clipboard
+    const jsonData = JSON.stringify(snapshotResult, null, 2);
+    navigator.clipboard.writeText(jsonData);
+  };
+
   // Render the component
   return (
     <div className="p-6 max-w-screen-xl mx-auto">
@@ -85,7 +110,7 @@ export function ProfileForm() {
             name="creatorAddress"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Creator Address</FormLabel>
+                <FormLabel>On-chain collection address</FormLabel>
                 <FormControl>
                   <Input placeholder="On chain collection address" {...field} />
                 </FormControl>
@@ -125,34 +150,41 @@ export function ProfileForm() {
       </Form>
       {/* Display the results */}
       <div className="my-10 flex justify-between items-center">
-        <h2 className="flex justify-between items-center">Results.</h2>
-        <h3 className="flex justify-between items-center">
-          Total: {snapshotResult ? snapshotResult.length : null}
-        </h3>
-      </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Wallet Address</TableHead>
-            <TableHead className="w-[100px]">Amount Owned</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {snapshotResult &&
-            snapshotResult.map((result, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{result}</TableCell>
-                <TableCell>{countOccurrences(result)}</TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-      {/* {snapshotResult && (
-        <div>
-          <h2>Search Results:</h2>
-          <pre>{JSON.stringify(snapshotResult, null, 2)}</pre>
+        {/* Left side - Results */}
+        <h2 className="flex items-center">Results.</h2>
+
+        {/* Right side - Total and Buttons */}
+        <div className="flex items-center">
+          <div className="mr-4">
+            <h3>Total: {snapshotResult ? snapshotResult.length : 0}</h3>
+          </div>
+
+          <div className="flex space-x-4">
+            <Button onClick={handleDownloadCSV}>Download CSV</Button>
+            <Button onClick={handleDownloadJSON}>Download JSON</Button>
+            <Button onClick={handleCopyToClipboard}>Copy to Clipboard</Button>
+          </div>
         </div>
-      )} */}
+      </div>
+      <ScrollArea className="h-[500px] mx-auto rounded-md border p-4">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Wallet Address</TableHead>
+              <TableHead className="w-[100px]">Amount Owned</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {snapshotResult &&
+              snapshotResult.map((result, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{result}</TableCell>
+                  <TableCell>{countOccurrences(result)}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </ScrollArea>
     </div>
   );
 }
