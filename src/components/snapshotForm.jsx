@@ -45,7 +45,7 @@ const formSchema = z.object({
 
 // Define the ProfileForm component
 export function ProfileForm() {
-  const [snapshotResult, setSanpshotResult] = useState(null);
+  const [snapshotResult, setSnapshotResult] = useState(null);
   // Initialize the form
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -63,13 +63,13 @@ export function ProfileForm() {
         data.creatorAddress,
         data.notListed
       );
-      setSanpshotResult(result); // Store the result in the state
+      setSnapshotResult(result); // Store the result in the state
 
       // Update the form state with the result
       form.setValue("result", result);
 
       // Log the result to the console
-      console.log("Unlisted Holders:", result);
+      console.log("Snapshot:", result);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -99,13 +99,13 @@ export function ProfileForm() {
 
     if (navigator.msSaveBlob) {
       // IE 10+
-      navigator.msSaveBlob(blob, "wallet_addresses.csv");
+      navigator.msSaveBlob(blob, "snapshot.csv");
     } else {
       // Other browsers
       const url = URL.createObjectURL(blob);
 
       link.href = url;
-      link.download = "wallet_addresses.csv";
+      link.download = "snapshot.csv";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -120,7 +120,7 @@ export function ProfileForm() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "output.json";
+    a.download = "snpashot.json";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -147,7 +147,7 @@ export function ProfileForm() {
             name="creatorAddress"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>On-chain collection address</FormLabel>
+                <FormLabel>Collection Address</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="DKS Example - 7LxjzYdvXXDMxEmjS3aBC26ut4FMtDUae44nkHBPNVWP"
@@ -203,7 +203,6 @@ export function ProfileForm() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  {" "}
                   <Button variant="outline" onClick={handleDownloadCSV}>
                     <Sheet />
                   </Button>
@@ -214,9 +213,7 @@ export function ProfileForm() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  {" "}
                   <Button variant="outline" onClick={handleDownloadJSON}>
-                    {" "}
                     <FileJson />
                   </Button>
                 </TooltipTrigger>
@@ -227,7 +224,6 @@ export function ProfileForm() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  {" "}
                   <Button variant="outline" onClick={handleCopyToClipboard}>
                     <Copy />
                   </Button>

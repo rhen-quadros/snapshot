@@ -1,15 +1,26 @@
 // components/Navbar.js
 import React from "react";
+import { Button } from "./ui/button";
+import { Coins, Twitter, Pizza } from "lucide-react";
+import Image from "next/image";
+import OnigiriLogo from "../app/onigiri.png";
 
 const Navbar = () => {
   return (
-    <header className="p-4 flex justify-between items-center">
+    <header className="p-6 max-w-screen-xl mx-auto flex justify-between items-center">
       <div id="logo" className="flex items-center">
-        <img src="/your-logo.png" alt="Logo" className="w-8 mr-2" />{" "}
+        <Image src={OnigiriLogo} width={75} height={75} alt="logo" />
+
+        <h1 className="ml-2 text-lg">ONIGIRI</h1>
       </div>
-      <button id="button" className="bg-green-500 text-white px-4 py-2 rounded">
-        Button
-      </button>
+      <div className="flex items-center">
+        <Button variant="outline" className="mr-4">
+          <Twitter />
+        </Button>
+        <Button>
+          Tip Jar <Coins className="ml-3" />
+        </Button>
+      </div>
     </header>
   );
 };
