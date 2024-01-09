@@ -41,6 +41,7 @@ import {
 const formSchema = z.object({
   creatorAddress: z.string().min(44).max(44),
   notListed: z.boolean().default(false).optional(),
+  traitValue: z.string().optional(),
 });
 
 // Define the ProfileForm component
@@ -52,6 +53,7 @@ export function ProfileForm() {
     defaultValues: {
       creatorAddress: "",
       notListed: false,
+      traitValue: "", // Added traitValue to defaultValues
     },
   });
 
@@ -61,7 +63,8 @@ export function ProfileForm() {
       // Fetch data based on the form input
       const result = await getAssetsByGroup(
         data.creatorAddress,
-        data.notListed
+        data.notListed,
+        data.traitValue
       );
       setSnapshotResult(result); // Store the result in the state
 
@@ -74,7 +77,6 @@ export function ProfileForm() {
       console.error("Error fetching data:", error);
     }
   };
-
   function countOccurrences(walletAddress) {
     // Count occurrences of the wallet address in the snapshotResult array
     return snapshotResult.filter((address) => address === walletAddress).length;
@@ -180,6 +182,21 @@ export function ProfileForm() {
                   />
                 </FormControl>
                 <FormLabel>Exclude NFTs listed on a marketplace.</FormLabel>
+              </FormItem>
+            )}
+          />
+
+          {/* New form field for trait value */}
+          <FormField
+            control={form.control}
+            name="traitValue"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Trait Value</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter trait value" {...field} />
+                </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />

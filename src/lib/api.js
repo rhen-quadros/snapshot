@@ -7,12 +7,13 @@ const marketplaceAddress = [
   "1BWutmTvYPwDtmw9abTkS4Ssr8no61spGAvW1X6NDix",
 ];
 
-const getAssetsByGroup = async (creatorAddress, marketplace) => {
+const getAssetsByGroup = async (creatorAddress, marketplace, traitValue) => {
   let page = 1;
   let hasMoreResults = true;
   let mintList = [];
   let allHolders = [];
   let unlistedHolders = [];
+  let traitMatchHolders = [];
 
   while (hasMoreResults) {
     const response = await fetch(url, {
@@ -37,8 +38,21 @@ const getAssetsByGroup = async (creatorAddress, marketplace) => {
 
     result.items.forEach((nfts) => {
       if (!nfts.burnt) {
-        mintList.push(nfts.id);
         allHolders.push(nfts.ownership.owner);
+
+        if (!marketplaceAddress.includes(nfts.ownership.owner)) {
+          unlistedHolders.push(nfts.ownership.owner);
+        }
+
+        if (traitValue && nfts.content.metadata) {
+          const traitMatch = nfts.content.metadata.attributes.some(
+            (attribute) => attribute.value === traitValue
+          );
+
+          if (traitMatch) {
+            traitMatchHolders.push(nfts.ownership.owner);
+          }
+        }
       }
     });
 
@@ -50,12 +64,9 @@ const getAssetsByGroup = async (creatorAddress, marketplace) => {
   }
 
   if (marketplace) {
-    allHolders.forEach((holderAddress) => {
-      if (!marketplaceAddress.includes(holderAddress)) {
-        unlistedHolders.push(holderAddress);
-      }
-    });
     return unlistedHolders;
+  } else if (traitValue) {
+    return traitMatchHolders;
   } else {
     return allHolders;
   }
