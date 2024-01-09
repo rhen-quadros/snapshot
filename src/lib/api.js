@@ -10,7 +10,6 @@ const marketplaceAddress = [
 const getAssetsByGroup = async (creatorAddress, marketplace, traitValue) => {
   let page = 1;
   let hasMoreResults = true;
-  let mintList = [];
   let allHolders = [];
   let unlistedHolders = [];
   let traitMatchHolders = [];
@@ -63,11 +62,19 @@ const getAssetsByGroup = async (creatorAddress, marketplace, traitValue) => {
     }
   }
 
-  if (marketplace) {
+  if (marketplace && traitValue) {
+    // Scenario 4: Full list where trait value matched excluding marketplaceAddresses
+    return traitMatchHolders.filter(
+      (holder) => !marketplaceAddress.includes(holder)
+    );
+  } else if (marketplace) {
+    // Scenario 2: Full list excluding marketplaceAddresses
     return unlistedHolders;
   } else if (traitValue) {
+    // Scenario 3: Full list where trait value matches
     return traitMatchHolders;
   } else {
+    // Scenario 1: Full list of all wallet addresses
     return allHolders;
   }
 };
