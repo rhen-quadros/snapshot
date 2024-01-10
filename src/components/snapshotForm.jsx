@@ -156,11 +156,13 @@ export function ProfileForm() {
                 </FormControl>
                 <FormDescription>
                   <a
-                    className="underline underline-offset-4 cursor-pointer"
                     href="https://magiceden.io/item-details/9Pqy8i6QQJqjbrkGyMVA1uLev2F7cXBjR5bY6hySdfsb?name=The-Mystic-King"
                     target="_blank"
                   >
-                    More info
+                    The on-chain collection address -{" "}
+                    <span className="underline underline-offset-4 cursor-pointer">
+                      More info
+                    </span>
                   </a>
                 </FormDescription>
                 <FormMessage />
@@ -180,6 +182,7 @@ export function ProfileForm() {
                     {...field}
                   />
                 </FormControl>
+                <FormDescription>For example - Bowler Hat</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
