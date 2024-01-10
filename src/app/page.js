@@ -17,7 +17,6 @@ const ContactPage = () => {
         </p>
       </div>
       <SnapshotForm />
-      <Footer />
     </div>
   );
 };

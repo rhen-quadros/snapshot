@@ -14,12 +14,24 @@ const Navbar = () => {
         <h1 className="ml-2 text-lg">ONIGIRI</h1>
       </div>
       <div className="flex items-center">
-        <Button variant="outline" className="mr-4">
-          <Twitter />
-        </Button>
-        <Button>
-          Tip Jar <Coins className="ml-3" />
-        </Button>
+        <a
+          href="https://twitter.com/BUIDLR_"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Button variant="outline" className="mr-4">
+            <Twitter />
+          </Button>
+        </a>
+        <a
+          href="https://hel.io/x/snapshot"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Button>
+            Tip Jar <Coins className="ml-3" />
+          </Button>
+        </a>
       </div>
     </header>
   );

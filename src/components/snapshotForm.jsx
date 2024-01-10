@@ -40,43 +40,41 @@ import {
 // Define the form schema
 const formSchema = z.object({
   creatorAddress: z.string().min(44).max(44),
-  notListed: z.boolean().default(false).optional(),
   traitValue: z.string().optional(),
+  notListed: z.boolean().default(false).optional(),
 });
 
 // Define the ProfileForm component
 export function ProfileForm() {
   const [snapshotResult, setSnapshotResult] = useState(null);
-  // Initialize the form
+  const [loading, setLoading] = useState(false); // Add loading state
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       creatorAddress: "",
+      traitValue: "",
       notListed: false,
-      traitValue: "", // Added traitValue to defaultValues
     },
   });
 
-  // Define the form submission logic
   const onSubmit = async (data) => {
     try {
-      // Fetch data based on the form input
+      setLoading(true); // Set loading to true on submit
       const result = await getAssetsByGroup(
         data.creatorAddress,
         data.notListed,
         data.traitValue
       );
-      setSnapshotResult(result); // Store the result in the state
-
-      // Update the form state with the result
+      setSnapshotResult(result);
       form.setValue("result", result);
-
-      // Log the result to the console
       console.log("Snapshot:", result);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false); // Set loading back to false after submit
     }
   };
+
   function countOccurrences(walletAddress) {
     // Count occurrences of the wallet address in the snapshotResult array
     return snapshotResult.filter((address) => address === walletAddress).length;
@@ -169,6 +167,23 @@ export function ProfileForm() {
               </FormItem>
             )}
           />
+          {/* New form field for trait value */}
+          <FormField
+            control={form.control}
+            name="traitValue"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Trait Name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Snapshot specific traits (case specific)"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="notListed"
@@ -186,23 +201,16 @@ export function ProfileForm() {
             )}
           />
 
-          {/* New form field for trait value */}
-          <FormField
-            control={form.control}
-            name="traitValue"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Trait Value</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter trait value" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           {/* Submit button */}
-          <Button type="submit">Submit</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? (
+              <div className="flex items-center">
+                <div className="h-5 w-5 border-t-2 border-b-2 border-gray-800 rounded-full animate-spin"></div>
+              </div>
+            ) : (
+              "Submit"
+            )}
+          </Button>
         </form>
       </Form>
       {/* Display the results */}

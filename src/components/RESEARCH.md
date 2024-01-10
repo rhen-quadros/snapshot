@@ -21,12 +21,9 @@ Additional
 
 Prioritisation (V1 Release)
 
-- Add favicon
-- Add logo
-- Update navbar button (twitter)
-- Add buy me a coffee button
-- Add ability to search by mint authority or creator address
+
 - Search by trait_value
 - Search by amount of time held
+- Add ability to search by mint authority or creator address
 - Add additional wallet addresses
 - Exclude wallet addresses
