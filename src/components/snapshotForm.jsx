@@ -39,7 +39,7 @@ import {
 
 // Define the form schema
 const formSchema = z.object({
-  creatorAddress: z.string().min(44).max(44),
+  creatorAddress: z.string(),
   traitValue: z.string().optional(),
   notListed: z.boolean().default(false).optional(),
 });
@@ -65,9 +65,19 @@ export function ProfileForm() {
         data.notListed,
         data.traitValue
       );
-      setSnapshotResult(result);
-      form.setValue("result", result);
-      console.log("Snapshot:", result);
+
+      if (result.length === 0) {
+        // If there are no results, call getAssetsByCreator
+        const creatorResult = await getAssetsByCreator(data.creatorAddress);
+        setSnapshotResult(creatorResult);
+        form.setValue("result", creatorResult);
+        console.log("Snapshot (by creator):", creatorResult);
+      } else {
+        // If there are results from getAssetsByGroup, set them as the snapshot result
+        setSnapshotResult(result);
+        form.setValue("result", result);
+        console.log("Snapshot (by group):", result);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
