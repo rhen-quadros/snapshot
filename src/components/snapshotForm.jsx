@@ -201,38 +201,40 @@ export function ProfileForm() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="notListed"
-            render={({ field }) => (
-              <FormItem className="flex items-center space-x-2">
-                <FormControl>
-                  <Checkbox
-                    id="terms1"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel>Exclude NFTs listed on a marketplace.</FormLabel>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="hashlist"
-            render={({ field }) => (
-              <FormItem className="flex items-center space-x-2">
-                <FormControl>
-                  <Checkbox
-                    id="terms1"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel>Hashlist</FormLabel>
-              </FormItem>
-            )}
-          />
+          <div className="flex items-center">
+            <FormField
+              control={form.control}
+              name="notListed"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-2 mr-4">
+                  <FormControl>
+                    <Checkbox
+                      id="terms1"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel>Exclude NFTs listed on a marketplace.</FormLabel>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="hashlist"
+              render={({ field }) => (
+                <FormItem className="flex items-center space-x-2">
+                  <FormControl>
+                    <Checkbox
+                      id="terms2"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel>Generate Hashlist</FormLabel>
+                </FormItem>
+              )}
+            />
+          </div>
 
           {/* Submit button */}
           <Button type="submit" disabled={loading}>
