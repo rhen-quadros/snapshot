@@ -35,7 +35,7 @@ const getAssetsByGroup = async (creatorAddress, marketplace, traitValue) => {
 
     if (result.items.length === 0 && page === 1) {
       // If there are no results in the first page, call getAssetsByCreator
-      return await getAssetsByCreator(creatorAddress);
+      return await getAssetsByCreator(creatorAddress, marketplace, traitValue);
     }
 
     result.items.forEach((nfts) => {
@@ -64,6 +64,10 @@ const getAssetsByGroup = async (creatorAddress, marketplace, traitValue) => {
       page++;
     }
   }
+
+  console.log("allHolders:", allHolders);
+  console.log("unlistedHolders:", unlistedHolders);
+  console.log("traitMatchHolders:", traitMatchHolders);
 
   if (marketplace && traitValue) {
     // Scenario 4: Full list where trait value matched excluding marketplaceAddresses

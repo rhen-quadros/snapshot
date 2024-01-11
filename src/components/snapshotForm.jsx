@@ -157,7 +157,7 @@ export function ProfileForm() {
             name="creatorAddress"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Collection Address</FormLabel>
+                <FormLabel>Snapshot Address</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="DKS Example - 7LxjzYdvXXDMxEmjS3aBC26ut4FMtDUae44nkHBPNVWP"
@@ -169,7 +169,7 @@ export function ProfileForm() {
                     href="https://magiceden.io/item-details/9Pqy8i6QQJqjbrkGyMVA1uLev2F7cXBjR5bY6hySdfsb?name=The-Mystic-King"
                     target="_blank"
                   >
-                    The on-chain collection address -{" "}
+                    The on-chain collection or the first creator address -{" "}
                     <span className="underline underline-offset-4 cursor-pointer">
                       More info
                     </span>
