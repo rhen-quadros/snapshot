@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { getAssetsByGroup } from "../lib/api";
+import { getAssetsByGroup, getAssetsByCreator } from "../lib/api"; // Assuming the correct path to api.js
 import { Button } from "./ui/button";
 import {
   Form,
@@ -42,38 +42,42 @@ const formSchema = z.object({
   creatorAddress: z.string(),
   traitValue: z.string().optional(),
   notListed: z.boolean().default(false).optional(),
+  hashlist: z.boolean().default(false).optional(),
 });
 
 // Define the ProfileForm component
 export function ProfileForm() {
   const [snapshotResult, setSnapshotResult] = useState(null);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       creatorAddress: "",
       traitValue: "",
       notListed: false,
+      hashlist: false,
     },
   });
 
   const onSubmit = async (data) => {
     try {
-      setLoading(true); // Set loading to true on submit
+      setLoading(true);
+      console.log("Form Data:", data);
+
       const result = await getAssetsByGroup(
         data.creatorAddress,
         data.notListed,
-        data.traitValue
+        data.traitValue,
+        data.hashlist
       );
+      console.log("Result from getAssetsByGroup:", result);
 
       if (result.length === 0) {
-        // If there are no results, call getAssetsByCreator
         const creatorResult = await getAssetsByCreator(data.creatorAddress);
         setSnapshotResult(creatorResult);
         form.setValue("result", creatorResult);
         console.log("Snapshot (by creator):", creatorResult);
       } else {
-        // If there are results from getAssetsByGroup, set them as the snapshot result
         setSnapshotResult(result);
         form.setValue("result", result);
         console.log("Snapshot (by group):", result);
@@ -81,7 +85,7 @@ export function ProfileForm() {
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      setLoading(false); // Set loading back to false after submit
+      setLoading(false);
     }
   };
 
@@ -169,7 +173,7 @@ export function ProfileForm() {
                     href="https://magiceden.io/item-details/9Pqy8i6QQJqjbrkGyMVA1uLev2F7cXBjR5bY6hySdfsb?name=The-Mystic-King"
                     target="_blank"
                   >
-                    The on-chain collection or the first creator address -{" "}
+                    The on-chain collection or the creator address -{" "}
                     <span className="underline underline-offset-4 cursor-pointer">
                       More info
                     </span>
@@ -210,6 +214,22 @@ export function ProfileForm() {
                   />
                 </FormControl>
                 <FormLabel>Exclude NFTs listed on a marketplace.</FormLabel>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="hashlist"
+            render={({ field }) => (
+              <FormItem className="flex items-center space-x-2">
+                <FormControl>
+                  <Checkbox
+                    id="terms1"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel>Hashlist</FormLabel>
               </FormItem>
             )}
           />

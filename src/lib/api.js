@@ -1,3 +1,6 @@
+// api.js
+"use client";
+
 const url =
   "https://mainnet.helius-rpc.com/?api-key=45c66c7d-affb-4a5d-a5d6-3639fe81a4f1";
 const marketplaceAddress = [
@@ -5,12 +8,18 @@ const marketplaceAddress = [
   "1BWutmTvYPwDtmw9abTkS4Ssr8no61spGAvW1X6NDix",
 ];
 
-const getAssetsByGroup = async (creatorAddress, marketplace, traitValue) => {
+const getAssetsByGroup = async (
+  creatorAddress,
+  marketplace,
+  traitValue,
+  hashlistHolder
+) => {
   let page = 1;
   let hasMoreResults = true;
   let allHolders = [];
   let unlistedHolders = [];
   let traitMatchHolders = [];
+  let hashlist = [];
 
   while (hasMoreResults) {
     const response = await fetch(url, {
@@ -34,26 +43,35 @@ const getAssetsByGroup = async (creatorAddress, marketplace, traitValue) => {
     const { result } = await response.json();
 
     if (result.items.length === 0 && page === 1) {
-      // If there are no results in the first page, call getAssetsByCreator
-      return await getAssetsByCreator(creatorAddress, marketplace, traitValue);
+      return await getAssetsByCreator(
+        creatorAddress,
+        marketplace,
+        traitValue,
+        hashlistHolder
+      );
     }
 
-    result.items.forEach((nfts) => {
-      if (!nfts.burnt) {
-        allHolders.push(nfts.ownership.owner);
+    result.items.forEach((nft) => {
+      if (!nft.burnt) {
+        allHolders.push(nft.ownership.owner);
 
-        if (!marketplaceAddress.includes(nfts.ownership.owner)) {
-          unlistedHolders.push(nfts.ownership.owner);
+        if (!marketplaceAddress.includes(nft.ownership.owner)) {
+          unlistedHolders.push(nft.ownership.owner);
         }
 
-        if (traitValue && nfts.content.metadata) {
-          const traitMatch = nfts.content.metadata.attributes.some(
+        if (traitValue && nft.content.metadata) {
+          const traitMatch = nft.content.metadata.attributes.some(
             (attribute) => attribute.value === traitValue
           );
 
           if (traitMatch) {
-            traitMatchHolders.push(nfts.ownership.owner);
+            traitMatchHolders.push(nft.ownership.owner);
           }
+        }
+
+        // Add to hashlist only when the checkbox is checked
+        if (hashlistHolder) {
+          hashlist.push(nft.id);
         }
       }
     });
@@ -65,9 +83,10 @@ const getAssetsByGroup = async (creatorAddress, marketplace, traitValue) => {
     }
   }
 
-  console.log("allHolders:", allHolders);
-  console.log("unlistedHolders:", unlistedHolders);
-  console.log("traitMatchHolders:", traitMatchHolders);
+  // Return hashlist when hashlistHolder is checked
+  if (hashlistHolder) {
+    return hashlist;
+  }
 
   if (marketplace && traitValue) {
     // Scenario 4: Full list where trait value matched excluding marketplaceAddresses
@@ -86,15 +105,19 @@ const getAssetsByGroup = async (creatorAddress, marketplace, traitValue) => {
   }
 };
 
-// Existing imports and constants...
-
-const getAssetsByCreator = async (creatorAddress, marketplace, traitValue) => {
+const getAssetsByCreator = async (
+  creatorAddress,
+  marketplace,
+  traitValue,
+  hashlistHolder
+) => {
   try {
     let page = 1;
     let hasMoreResults = true;
     let allHolders = [];
     let unlistedHolders = [];
     let traitMatchHolders = [];
+    let hashlist = [];
 
     while (hasMoreResults) {
       const response = await fetch(url, {
@@ -121,25 +144,30 @@ const getAssetsByCreator = async (creatorAddress, marketplace, traitValue) => {
         hasMoreResults = false;
       }
 
-      result.items.forEach((nfts) => {
-        if (!nfts.burnt) {
-          allHolders.push(nfts.ownership.owner);
+      result.items.forEach((nft) => {
+        if (!nft.burnt) {
+          allHolders.push(nft.ownership.owner);
 
           if (
             marketplace &&
-            !marketplaceAddress.includes(nfts.ownership.owner)
+            !marketplaceAddress.includes(nft.ownership.owner)
           ) {
-            unlistedHolders.push(nfts.ownership.owner);
+            unlistedHolders.push(nft.ownership.owner);
           }
 
-          if (traitValue && nfts.content.metadata) {
-            const traitMatch = nfts.content.metadata.attributes.some(
+          if (traitValue && nft.content.metadata) {
+            const traitMatch = nft.content.metadata.attributes.some(
               (attribute) => attribute.value === traitValue
             );
 
             if (traitMatch) {
-              traitMatchHolders.push(nfts.ownership.owner);
+              traitMatchHolders.push(nft.ownership.owner);
             }
+          }
+
+          // Add to hashlist only when the checkbox is checked
+          if (hashlistHolder) {
+            hashlist.push(nft.id);
           }
         }
       });
@@ -151,9 +179,10 @@ const getAssetsByCreator = async (creatorAddress, marketplace, traitValue) => {
       }
     }
 
-    console.log("allHolders:", allHolders);
-    console.log("unlistedHolders:", unlistedHolders);
-    console.log("traitMatchHolders:", traitMatchHolders);
+    // Return hashlist when hashlistHolder is checked
+    if (hashlistHolder) {
+      return hashlist;
+    }
 
     if (marketplace && traitValue) {
       // Scenario 4: Full list where trait value matched excluding marketplaceAddresses
@@ -175,11 +204,5 @@ const getAssetsByCreator = async (creatorAddress, marketplace, traitValue) => {
     throw error;
   }
 };
-
-// Export statement...
-
-//   const { result } = await response.json();
-//   return result.items.map((nfts) => nfts.ownership.owner);
-// };
 
 export { getAssetsByGroup, getAssetsByCreator };
