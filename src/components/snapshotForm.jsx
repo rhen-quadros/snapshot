@@ -249,13 +249,13 @@ export function ProfileForm() {
         </form>
       </Form>
       {/* Display the results */}
-      <div className="my-10 flex justify-between items-center">
-        {/* Left side - Results */}
-        <h2 className="flex items-center">Results.</h2>
+      <div className="my-10 flex flex-col sm:flex-row items-center sm:justify-between">
+        {/* Results heading */}
+        <h2 className="flex items-center mb-4 sm:mb-0 sm:mr-4">Results.</h2>
 
-        {/* Right side - Total and Buttons */}
-        <div className="flex items-center">
-          <div className="mr-4">
+        {/* Total and Buttons */}
+        <div className="flex flex-col sm:flex-row items-center">
+          <div className="mb-2 sm:mb-0 sm:mr-4">
             <h3>Total: {snapshotResult ? snapshotResult.length : 0}</h3>
           </div>
 
